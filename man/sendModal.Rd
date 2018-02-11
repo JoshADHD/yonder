@@ -4,6 +4,7 @@
 \alias{sendModal}
 \alias{closeModal}
 \alias{modalEvent}
+\alias{onInitialized}
 \alias{modal}
 \title{Modal dialogs}
 \usage{
@@ -12,6 +13,8 @@ sendModal(title, body, footer = NULL, session = getDefaultReactiveDomain())
 closeModal(session = getDefaultReactiveDomain())
 
 modalEvent(event, modal, domain = getDefaultReactiveDomain())
+
+onInitialized()
 
 modal(title, body)
 }
@@ -72,6 +75,19 @@ if (interactive()) {
         if (input$login$username != "" && input$login$password != "") {
           closeModal()
         }
+      })
+    }
+  )
+}
+
+if (interactive()) {
+  shinyApp(
+    ui = container(
+
+    ),
+    server = function(input, output, session) {
+      modalEvent(onInitialized(), {
+        modal("Initialize", "Session initialized")
       })
     }
   )

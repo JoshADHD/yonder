@@ -86,6 +86,20 @@ closeModal <- function(session = getDefaultReactiveDomain()) {
 
 #' @rdname sendModal
 #' @export
+#' @examples
+#' if (interactive()) {
+#'   shinyApp(
+#'     ui = container(
+#'
+#'     ),
+#'     server = function(input, output, session) {
+#'       modalEvent(onInitialized(), {
+#'         modal("Initialize", "Session initialized")
+#'       })
+#'     }
+#'   )
+#' }
+#'
 modalEvent <- function(event, modal, domain = getDefaultReactiveDomain()) {
   priority <- -5000
   pframe <- parent.frame()
@@ -104,9 +118,11 @@ modalEvent <- function(event, modal, domain = getDefaultReactiveDomain()) {
   initialized <- FALSE
 
   o <- observe({
-    eventFunc()
+    e <- eventFunc()
 
-    if (!initialized) {
+    init <- if (is.null(e)) FALSE else e == "__INITIALIZED"
+
+    if (!init && !initialized) {
       initialized <<- TRUE
       return(NULL)
     }
@@ -121,6 +137,12 @@ modalEvent <- function(event, modal, domain = getDefaultReactiveDomain()) {
   autoDestroy = TRUE, ..stacktraceon = FALSE)
 
   invisible(o)
+}
+
+#' @rdname sendModal
+#' @export
+onInitialized <- function() {
+  invisible("__INITIALIZED")
 }
 
 #' @rdname sendModal
