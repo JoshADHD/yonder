@@ -16,7 +16,7 @@ modalEvent(event, modal, domain = getDefaultReactiveDomain())
 
 onInitialized()
 
-modal(title, body)
+modal(title, body, size = NULL)
 }
 \arguments{
 \item{title}{A character string specifying the modal's title.}
@@ -87,7 +87,7 @@ if (interactive()) {
     ),
     server = function(input, output, session) {
       modalEvent(onInitialized(), {
-        modal("Initialize", "Session initialized")
+        modal("Initialize", "Session initialized", size = "large")
       })
     }
   )

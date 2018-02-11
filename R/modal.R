@@ -94,7 +94,7 @@ closeModal <- function(session = getDefaultReactiveDomain()) {
 #'     ),
 #'     server = function(input, output, session) {
 #'       modalEvent(onInitialized(), {
-#'         modal("Initialize", "Session initialized")
+#'         modal("Initialize", "Session initialized", size = "large")
 #'       })
 #'     }
 #'   )
@@ -147,9 +147,12 @@ onInitialized <- function() {
 
 #' @rdname sendModal
 #' @export
-modal <- function(title, body) {
+modal <- function(title, body, size = NULL) {
   tags$div(
-    class = "modal-dialog",
+    class = collate(
+      "modal-dialog",
+      if (!is.null(size)) paste0("modal-", if (size == "large") "lg" else "sm")
+    ),
     role = "document",
     tags$div(
       class = "modal-content",
