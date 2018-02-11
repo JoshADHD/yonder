@@ -83,3 +83,72 @@ closeModal <- function(session = getDefaultReactiveDomain()) {
     )
   )
 }
+
+#' @rdname sendModal
+#' @export
+modalEvent <- function(event, modal, domain = getDefaultReactiveDomain()) {
+  priority <- -5000
+  pframe <- parent.frame()
+  quoted <- FALSE
+
+  eventFunc <- shiny::exprToFunction(event, pframe, quoted)
+  eventFunc <- wrapFunctionLabel(eventFunc, "modalEvent", ..stacktraceon = TRUE)
+
+  modalFun <- shiny::exprToFunction(modal, pframe, quoted)
+
+  label <- sprintf(
+    "modalEvent(%s)",
+    paste(deparse(body(eventFunc)), collapse = "\n")
+  )
+
+  initialized <- FALSE
+
+  o <- observe({
+    eventFunc()
+
+    if (!initialized) {
+      initialized <<- TRUE
+      return(NULL)
+    }
+
+    modal <- isolate(modalFun())
+
+    domain$sendCustomMessage("dull:modal", list(
+      content = HTML(as.character(modal))
+    ))
+
+  }, label = label, suspended = FALSE, priority = priority, domain = domain,
+  autoDestroy = TRUE, ..stacktraceon = FALSE)
+
+  invisible(o)
+}
+
+#' @rdname sendModal
+#' @export
+modal <- function(title, body) {
+  tags$div(
+    class = "modal-dialog",
+    role = "document",
+    tags$div(
+      class = "modal-content",
+      tags$div(
+        class = "modal-header",
+        tags$h5(class = "modal-title", title),
+        tags$button(
+          type = "button",
+          class = "close",
+          `data-dismiss` = "modal",
+          `aria-label` = "Close",
+          fontAwesome("window-close")
+        )
+      ),
+      tags$div(
+        class = "modal-body",
+        tags$div(
+          class = "container-fluid",
+          body
+        )
+      )
+    )
+  )
+}

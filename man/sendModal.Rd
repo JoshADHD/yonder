@@ -3,11 +3,17 @@
 \name{sendModal}
 \alias{sendModal}
 \alias{closeModal}
+\alias{modalEvent}
+\alias{modal}
 \title{Modal dialogs}
 \usage{
 sendModal(title, body, footer = NULL, session = getDefaultReactiveDomain())
 
 closeModal(session = getDefaultReactiveDomain())
+
+modalEvent(event, modal, domain = getDefaultReactiveDomain())
+
+modal(title, body)
 }
 \arguments{
 \item{title}{A character string specifying the modal's title.}
