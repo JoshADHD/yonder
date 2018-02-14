@@ -16,80 +16,6 @@
 #' if (interactive()) {
 #'   shinyApp(
 #'     ui = container(
-#'       buttonInput(id = "button", "Click to show modal")
-#'     ),
-#'     server = function(input, output) {
-#'       observeEvent(input$button, {
-#'         sendModal(
-#'           title = "A simple modal",
-#'           body = paste(
-#'             "Cras mattis consectetur purus sit amet fermentum.",
-#'             "Cras justo odio, dapibus ac facilisis in, egestas",
-#'             "eget quam. Morbi leo risus, porta ac consectetur",
-#'             "ac, vestibulum at eros."
-#'           )
-#'         )
-#'       })
-#'     }
-#'   )
-#' }
-#'
-#' if (interactive()) {
-#'   shinyApp(
-#'     ui = container(
-#'       row(
-#'         class = "justify-content-center",
-#'         col(
-#'           buttonInput(id = "trigger", "Trigger modal")
-#'         )
-#'       )
-#'     ),
-#'     server = function(input, output) {
-#'       observeEvent(input$trigger, {
-#'         sendModal(
-#'           title = "Login",
-#'           body = loginInput("login")
-#'         )
-#'       })
-#'
-#'       observeEvent(input$login, {
-#'         if (input$login$username != "" && input$login$password != "") {
-#'           closeModal()
-#'         }
-#'       })
-#'     }
-#'   )
-#' }
-#'
-sendModal <- function(title, body, footer = NULL,
-                      session = getDefaultReactiveDomain()) {
-  session$sendCustomMessage(
-    "dull:modal",
-    list(
-      title = htmltools::HTML(as.character(title)),
-      body = htmltools::HTML(as.character(body)),
-      footer = if (!is.null(footer)) htmltools::HTML(as.character(footer))
-    )
-  )
-}
-
-#' @rdname sendModal
-#' @export
-closeModal <- function(session = getDefaultReactiveDomain()) {
-  session$sendCustomMessage(
-    "dull:modal",
-    list(
-      close = TRUE
-    )
-  )
-}
-
-#' @rdname sendModal
-#' @export
-#' @examples
-#' if (interactive()) {
-#'   shinyApp(
-#'     ui = container(
 #'
 #'     ),
 #'     server = function(input, output, session) {
@@ -139,19 +65,18 @@ modalEvent <- function(event, modal, domain = getDefaultReactiveDomain()) {
   invisible(o)
 }
 
-#' @rdname sendModal
+#' @rdname modalEvent
 #' @export
 onInitialized <- function() {
   invisible("__INITIALIZED")
 }
 
-#' @rdname sendModal
+#' @rdname modalEvent
 #' @export
-modal <- function(title, body, size = NULL) {
+modal <- function(title, body, footer = NULL) {
   tags$div(
     class = collate(
-      "modal-dialog",
-      if (!is.null(size)) paste0("modal-", if (size == "large") "lg" else "sm")
+      "modal-dialog"
     ),
     role = "document",
     tags$div(
@@ -173,7 +98,13 @@ modal <- function(title, body, size = NULL) {
           class = "container-fluid",
           body
         )
-      )
+      ),
+      if (!is.null(footer)) {
+        tags$div(
+          class = "modal-footer",
+          footer
+        )
+      }
     )
   )
 }
