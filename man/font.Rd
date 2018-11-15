@@ -2,26 +2,29 @@
 % Please edit documentation in R/design.R
 \name{font}
 \alias{font}
-\title{Tag element font}
+\title{Font classes}
 \usage{
 font(.tag, color = NULL, size = NULL, weight = NULL, align = NULL)
 }
 \arguments{
-\item{.tag}{A tag element.}
+\item{color}{One of \code{"red"}, \code{"purple"}, \code{"indigo"}, \code{"blue"}, \code{"cyan"},
+\code{"teal"}, \code{"green"}, \code{"yellow"}, \code{"amber"}, \code{"orange"}, \code{"grey"}, or
+\code{"white"} specifying the text color, defaults to \code{NULL}, in which case text
+color is unmodified.}
 
-\item{color}{A character string specifying the text color of the tag element,
-defaults to \code{NULL} in which case the text color is unchanged.}
-
-\item{size}{One of \code{"2x"}, \code{"3x"}, ..., or \code{"10x"} specifying a factor to
-increase a tag element's font size by (e.g. \code{"2x"} is double the base font
-size), defaults to \code{NULL}, in which case the font size is unchanged.}
+\item{size}{One of \code{"xs"}, \code{"sm"}, \code{"base"}, \code{"lg"}, or \code{"xl"} specifying a
+font size relative to the base font size of the page, defaults to \code{"base"}.}
 
 \item{weight}{One of \code{"bold"}, \code{"normal"}, \code{"light"}, \code{"italic"}, or
 \code{"monospace"} specifying the font weight of the element's text, defaults to
-\code{NULL}, in which case the font weight is unchanged.}
+\code{"normal"}.}
 
 \item{align}{A \link{responsive} argument. One of \code{"left"}, \code{"center"}, \code{"right"},
 or \code{"justify"}.}
+
+\item{transform}{One of \code{"upper"}, \code{"lower"}, or \code{"capitalize"} specifying a
+text transformation, defaults to \code{NULL}, in which case a transformation is
+not applied.}
 }
 \description{
 The \code{font()} utility may be used to change the color, size, or weight of a
@@ -30,22 +33,6 @@ size of the web page.
 }
 \details{
 The possible font colors are,
-\itemize{
-\item red
-\item purple
-\item indigo
-\item blue
-\item cyan
-\item teal
-\item green
-\item yellow
-\item amber
-\item orange
-\item body (this "color" sets the tag element's font color to the default body
-color)
-\item grey
-\item white
-}
 }
 \examples{
 

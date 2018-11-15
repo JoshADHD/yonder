@@ -370,23 +370,6 @@ tagHasClass <- function(x, class) {
   )
 }
 
-tagRename <- function(tag, name) {
-  if (!is_tag(tag)) {
-    return(NULL)
-  }
-
-  tag$name <- name
-  tag
-}
-
-tagIs <- function(x, name) {
-  if (!is_tag(x)) {
-    return(FALSE)
-  }
-
-  isTRUE(x$name %in% name)
-}
-
 tagAddClass <- function(x, class) {
   stopifnot(is_tag(x))
 
@@ -416,5 +399,65 @@ tagDropClass <- function(x, regex) {
 
   x$attribs$class <- gsub(regex, "", x$attribs$class)
   x$attribs$class <- gsub("\\s+", " ", x$attribs$class)
+  x
+}
+
+tagRename <- function(tag, name) {
+  if (!is_tag(tag)) {
+    return(NULL)
+  }
+
+  tag$name <- name
+  tag
+}
+
+tagIs <- function(x, name) {
+  if (!is_tag(x)) {
+    return(FALSE)
+  }
+
+  isTRUE(x$name %in% name)
+}
+
+correctBackgroundClass <- function(x) {
+  bg_regex <- paste0("(bg\\-(?:", paste0(.colors, collapse = "|"), "))")
+
+  if (tagHasClass(x, bg_regex)) {
+    base <- if (tagHasClass(x, "alert")) {
+      "alert"
+    } else if (tagHasClass(x, "badge")) {
+      "badge"
+    } else if (tagHasClass(x, "yonder-radiobar|yonder-checkbar") ||
+                 tagHasClass(x, "btn-group") ||
+                 tagHasClass(x, "btn")) {
+      "btn"
+    } else if (tagHasClass(x, "list-group-item")) {
+      "list-group-item"
+    } else {
+      "bg"
+    }
+
+    if (base == "bg") {
+      return(x)
+    }
+
+    bg <- regmatches(x$attribs$class, gregexpr(bg_regex, x$attribs$class))
+    corrected_bg <- gsub("^bg", base, bg)
+
+    if (tagHasClass(x, "yonder\\-checkbar|yonder\\-radiobar") ||
+          tagHasClass(x, "btn-group") ||
+          tagHasClass(x, "dropdown")) {
+      x <- tagRemoveClass(x, bg)
+
+      if (tagHasClass(x, "dropdown")) {
+        x$children[[1]] <- tagAddClass(x$children[[1]], corrected_bg)
+      } else {
+        x$children[[1]] <- lapply(x$children[[1]], tagAddClass, corrected_bg)
+      }
+    } else {
+      x$attribs$class <- gsub(corrected_bg, bg, x$attribs$class, fixed = TRUE)
+    }
+  }
+
   x
 }

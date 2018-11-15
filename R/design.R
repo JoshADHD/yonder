@@ -23,99 +23,88 @@ NULL
   "white"
 )
 
-colorUtility <- function(tag, base, color) {
-  if (tagHasClass(tag, "yonder-checkbar|yonder-radiobar") ||
-        tagHasClass(tag, "btn-group")) {
-    tag$children[[1]] <- lapply(
-      tag$children[[1]],
-      colorUtility,
-      base = base,
-      color = color
-    )
-
-    return(tag)
-  }
-
-  if (tagHasClass(tag, "dropdown")) {
-    tag$children[[1]] <- colorUtility(
-      tag$children[[1]],
-      base = base,
-      color = color
-    )
-
-    return(tag)
-  }
-
-  tag <- tagDropClass(tag, sprintf("%s-(%s)", base, paste(.colors, collapse = "|")))
-  tag <- tagAddClass(tag, paste0(base, "-", color))
-
-  attachDependencies(tag, c(yonderDep(), bootstrapDep()), append = TRUE)
-}
-
-#' Tag element font
+#' Font classes
 #'
-#' The `font()` utility may be used to change the color, size, or weight of a
-#' tag element's text font. Font size's are changed relative to the base font
-#' size of the web page.
+#' The `font()` utility generates HTML classes to modify a tag element's
+#' text. Text color, size, weight, case, or alignment can be modified. All
+#' arguments default to `NULL`, in which case they are ignored. For example,
+#' `font(size = "lg")` increases font size without affecting color, weight,
+#' case, or alignment.
 #'
-#' @param .tag A tag element.
+#' @param color One of `"red"`, `"purple"`, `"indigo"`, `"blue"`, `"cyan"`,
+#'   `"teal"`, `"green"`, `"yellow"`, `"amber"`, `"orange"`, `"grey"`, or
+#'   `"white"` specifying the text color, defaults to `NULL`.
 #'
-#' @param color A character string specifying the text color of the tag element,
-#'   defaults to `NULL` in which case the text color is unchanged.
-#'
-#' @param size One of `"2x"`, `"3x"`, ..., or `"10x"` specifying a factor to
-#'   increase a tag element's font size by (e.g. `"2x"` is double the base font
-#'   size), defaults to `NULL`, in which case the font size is unchanged.
+#' @param size One of `"xs"`, `"sm"`, `"base"`, `"lg"`, or `"xl"` specifying a
+#'   font size relative to the base font size of the page, defaults to `NULL`.
 #'
 #' @param weight One of `"bold"`, `"normal"`, `"light"`, `"italic"`, or
 #'   `"monospace"` specifying the font weight of the element's text, defaults to
-#'   `NULL`, in which case the font weight is unchanged.
+#'   `NULL`.
+#'
+#' @param transform One of `"upper"`, `"lower"`, or `"capitalize"` specifying a
+#'   text transformation, defaults to `NULL`.
 #'
 #' @param align A [responsive] argument. One of `"left"`, `"center"`, `"right"`,
-#'   or `"justify"`.
-#'
-#' @details
-#'
-#' The possible font colors are,
-#'
-#' * red
-#' * purple
-#' * indigo
-#' * blue
-#' * cyan
-#' * teal
-#' * green
-#' * yellow
-#' * amber
-#' * orange
-#' * body (this "color" sets the tag element's font color to the default body
-#'   color)
-#' * grey
-#' * white
+#'   or `"justify"`, defaults to `NULL`.
 #'
 #' @family design
 #' @export
 #' @examples
 #'
-#' ### Possible colors
-#'
-#' colors <- c(
-#'   "red", "purple", "indigo", "blue", "cyan", "teal", "green",
-#'   "yellow", "amber", "orange", "body", "grey", "white"
-#' )
+#' ### Font color
 #'
 #' div(
-#'   lapply(
-#'     head(colors, -1),
-#'     font,
-#'     .tag = div("Pellentesque tristique imperdiet tortor.") %>%
-#'       padding(5)
+#'   div(
+#'     class = c(
+#'       padding(5),
+#'       text("red")  # <-
+#'     ),
+#'     "Pellentesque tristique imperdiet tortor."
+#'   ),
+#'   div(
+#'     class = c(
+#'       padding(5),
+#'       text("blue")  # <-
+#'     ),
+#'     "Pellentesque tristique imperdiet tortor."
+#'   ),
+#'   div(
+#'     class = c(
+#'       padding(5),
+#'       text("amber")  # <-
+#'     ),
+#'     "Pellentesque tristique imperdiet tortor."
 #'   )
-#' ) %>%
-#'   display("flex") %>%
-#'   flex(wrap = TRUE)
+#' )
 #'
-font <- function(.tag, color = NULL, size = NULL, weight = NULL, align = NULL) {
+#' ### Font size
+#'
+#' div(
+#'   div(
+#'     class = font(size = "xs"),
+#'     "Nam vestibulum accumsan nisl."
+#'   ),
+#'   div(
+#'     class = font(size = "sm"),
+#'     "Nam vestibulum accumsan nisl."
+#'   ),
+#'   div(
+#'     class = font(size = "base"),
+#'     "Nam vestibulum accumsan nisl."
+#'   ),
+#'   div(
+#'     class = font(size = "lg"),
+#'     "Nam vestibulum accumsan nisl."
+#'   ),
+#'   div(
+#'     class = font(size = "xl"),
+#'     "Nam vestibulum accumsan nisl."
+#'   )
+#' )
+#'
+font <- function(color = NULL, size = NULL, weight = NULL, transform = NULL,
+                 align = NULL) {
   if (color != "body" && !re(color, paste(.colors, collapse = "|"))) {
     stop(
       "invalid `text` argument, `color` is invalid, see ?background ",
@@ -132,7 +121,7 @@ font <- function(.tag, color = NULL, size = NULL, weight = NULL, align = NULL) {
     )
   }
 
-  if (!re(size, "([2-9]|10)x")) {
+  if (!re(size, "xs|sm|base|lg|xl")) {
     stop(
       "invalid `size` argument, `size` must be one of ",
       '"2x" through "10px"',
@@ -233,7 +222,7 @@ font <- function(.tag, color = NULL, size = NULL, weight = NULL, align = NULL) {
 #'   display("flex") %>%
 #'   flex(wrap = TRUE)
 #'
-background <- function(.tag, color) {
+background <- function(color) {
   if (!(color %in% c(.colors, "transparent"))) {
     stop(
       "invalid `background` argument, `color` is invalid, see ?background ",
@@ -242,21 +231,7 @@ background <- function(.tag, color) {
     )
   }
 
-  if (color == "transparent") {
-    base <- "bg"
-  } else if (tagHasClass(.tag, "alert")) {
-    base <- "alert"
-  } else if (tagHasClass(.tag, "badge")) {
-    base <- "badge"
-  } else if (tagHasClass(.tag, "yonder-radiobar|yonder-checkbar") ||
-               tagHasClass(.tag, "btn-group") ||
-               tagHasClass(.tag, "btn")) {
-    base <- "btn"
-  } else if (tagHasClass(.tag, "list-group-item")) {
-    base <- "list-group-item"
-  } else {
-    base <- "bg"
-  }
+
 
   colorUtility(.tag, base, color)
 }

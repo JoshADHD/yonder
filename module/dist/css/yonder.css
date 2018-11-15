@@ -1424,40 +1424,24 @@ body {
   height: 100vh !important;
 }
 
-.font-size-2x {
-  font-size: 2rem !important;
+.font-size-xs {
+  font-size: 0.75rem !important;
 }
 
-.font-size-3x {
-  font-size: 3rem !important;
+.font-size-sm {
+  font-size: 0.875rem !important;
 }
 
-.font-size-4x {
-  font-size: 4rem !important;
+.font-size-md {
+  font-size: 1rem !important;
 }
 
-.font-size-5x {
-  font-size: 5rem !important;
+.font-size-lg {
+  font-size: 1.125rem !important;
 }
 
-.font-size-6x {
-  font-size: 6rem !important;
-}
-
-.font-size-7x {
-  font-size: 7rem !important;
-}
-
-.font-size-8x {
-  font-size: 8rem !important;
-}
-
-.font-size-9x {
-  font-size: 9rem !important;
-}
-
-.font-size-10x {
-  font-size: 10rem !important;
+.font-size-xl {
+  font-size: 1.25rem !important;
 }
 
 @font-face {
