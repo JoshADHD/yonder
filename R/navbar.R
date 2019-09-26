@@ -13,6 +13,9 @@
 #' @param brand A tag element or text placed on the left end of the navbar,
 #'   defaults to `NULL`, in which case nothing is added.
 #'
+#' @param brand_link A character string URL that will activate when the brand is clicked,
+#'   defaults to `NULL`.
+#'
 #' @param collapse One of `"sm"`, `"md"`, `"lg"`, `"xl"`, or `NULL` specifying
 #'   the breakpoint at which the navbar collapes, defaults to `NULL`, in which
 #'   case the navbar is always expanded.
@@ -63,7 +66,7 @@
 #'   )
 #' )
 #'
-navbar <- function(..., brand = NULL, collapse = NULL) {
+navbar <- function(..., brand = NULL, brand_link = "#", collapse = NULL) {
   assert_possible(collapse, c("sm", "md", "lg", "xl"))
 
   dep_attach({
@@ -89,7 +92,7 @@ navbar <- function(..., brand = NULL, collapse = NULL) {
     brand <- if (!is.null(brand)) {
       tags$a(
         class = "navbar-brand",
-        href = "#",
+        href = if (!is.null(brand_link)) { "#" } else { brand_link },
         brand
       )
     }
