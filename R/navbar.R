@@ -92,7 +92,7 @@ navbar <- function(..., brand = NULL, brand_link = NULL, collapse = NULL) {
     brand <- if (!is.null(brand)) {
       tags$a(
         class = "navbar-brand",
-        href = if (!is.null(brand_link)) { "#" } else { brand_link },
+        href = if (is.null(brand_link)) { "#" } else { brand_link },
         brand
       )
     }
