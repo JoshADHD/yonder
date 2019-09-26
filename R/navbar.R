@@ -66,7 +66,7 @@
 #'   )
 #' )
 #'
-navbar <- function(..., brand = NULL, brand_link = "#", collapse = NULL) {
+navbar <- function(..., brand = NULL, brand_link = NULL, collapse = NULL) {
   assert_possible(collapse, c("sm", "md", "lg", "xl"))
 
   dep_attach({
